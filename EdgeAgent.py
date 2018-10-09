@@ -190,8 +190,7 @@ class EdgeAgent():
     if rc == 0:
       return (True, None)
     else:
-      #recover
-      print('recover')
+      self.__recoverHelper.write(payload)
     if rc == 1:
       return (False, 'MQTT_ERR_NO_CONN')
     elif rc == 2:

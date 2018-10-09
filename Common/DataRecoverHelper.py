@@ -26,6 +26,7 @@ class DataRecoverHelper:
       self.__lock.release()
       return result
     except Exception as error:
+      self.__lock.release()
       print(error)
       return False
 
@@ -42,11 +43,13 @@ class DataRecoverHelper:
         messages.append(row[1])
       c.execute("DELETE FROM Data WHERE id IN (%s)" % ("?," * len(ids))[:-1], ids)
       conn.commit()      
-      conn.close()  
+      conn.close()
       self.__lock.release()
+      return messages
     except Exception as error:
+      self.__lock.release()
       print(error)
-    return messages
+      return []
 
   def write(self, message = None):
     try:
@@ -64,5 +67,6 @@ class DataRecoverHelper:
       self.__lock.release()
       return True
     except Exception as error:
+      self.__lock.release()
       print(error)
       return False
