@@ -101,7 +101,7 @@ class ScadaConfig():
       return (False, ValueError('name is necessary'))
     if self.type is None:
       return (False, ValueError('scadaType is necessary'))
-    if not (self.type in constant.EdgeType):
+    if not (self.type in constant.EdgeType.values()):
       return (False, ValueError('scadaType is invalid'))
     return (True, None)
 
