@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="WISE_PaaS_SCADA_Python_SDK",
-    version="1.0.9",
+    version="1.0.10",
     author="Stacy Yeh",
     author_email="stacy.yeh@advantech.com",
     description="The WISEPaaS_SCADA_Python_SDK package allows developers to write Python applications which access the WISE-PaaS Platform via MQTT or MQTT over the Secure WebSocket Protocol.",
@@ -13,6 +13,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/advwacloud/WISEPaaS.SCADA.Python.SDK",
     packages=setuptools.find_packages(),
+    install_requires=[
+        "paho-mqtt==1.4.0"
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
