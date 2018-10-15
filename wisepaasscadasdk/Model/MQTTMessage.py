@@ -1,6 +1,6 @@
 import json
 import datetime
-import WISEPaaS_SCADA.Common.Constants as constant
+import wisepaasscadasdk.Common.Constants as constant
 
 format = '%Y-%m-%dT%H:%M:%S%z'
 

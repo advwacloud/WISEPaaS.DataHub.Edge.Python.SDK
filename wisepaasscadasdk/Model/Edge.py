@@ -1,6 +1,6 @@
 import datetime
 
-import WISEPaaS_SCADA.Common.Constants as constant
+import wisepaasscadasdk.Common.Constants as constant
 
 class EdgeAgentOptions():
   def __init__(self, 
@@ -71,7 +71,7 @@ class EdgeTag():
     self.tagName = tagName
     self.value = value
 
-class EdgeDevice():
+class EdgeStatus():
   def __init__(self, id = None, status = constant.Status['Offline']):
     self.id = id
     self.status = status

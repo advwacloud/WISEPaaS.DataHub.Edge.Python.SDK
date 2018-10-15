@@ -1,11 +1,11 @@
 import sqlite3
 import os
 import threading
-import WISEPaaS_SCADA.Common.Constants as constant
+import wisepaasscadasdk.Common.Constants as constants
 
 class DataRecoverHelper:
   def __init__(self):
-    self.__filePath = os.path.join(os.getcwd(), constant.DBFileName)
+    self.__filePath = os.path.join(os.getcwd(), constants.DBFileName)
     # self.__connString = "data source=" + self__filePath
     self.__lock = threading.Lock()
 
@@ -30,13 +30,18 @@ class DataRecoverHelper:
       print(error)
       return False
 
-  def read(self, count = constant.DefaultReadRecordCount):
+  def read(self, count = constants.DefaultReadRecordCount):
     try:
       messages = []
       ids = []
+      if not os.path.isfile(self.__filePath):
+        return messages
       self.__lock.acquire()
       conn = sqlite3.connect(self.__filePath)
       c = conn.cursor()
+      c.execute('''CREATE TABLE IF Not exists Data 
+      (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      message TEXT NOT NULL);''')
       cursor = c.execute('SELECT * FROM Data LIMIT (?)', (count, ))
       for row in cursor:
         ids.append(row[0])

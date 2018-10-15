@@ -11,46 +11,38 @@ ActionType = {
   'Update': 2,
   'Delete': 3
 }
-
 ConnectType = {
   'MQTT': 'MQTT',
   'DCCS': 'DCCS'
 }
-
 Protocol = {
   'TCP': 'tcp',
   'WebSocket': 'websockets'
 }
-
 MqttQualityOfServiceLevel = {
   'AtMostOnce': 0,
   'AtLeastOnce': 1,
   'ExactlyOnce': 2
 }
-
 EdgeType = {
   'Gateway': 0,
   'Device': 1
 }
-
 TagType = {
   'Analog': 1,
   'Discrete': 2,
   'Text': 3
 }
-
 MessageType = {
   'WriteValue': 0,
   'WriteConfig': 1,
   'TimeSync': 2,
   'ConfigAck': 3
 }
-
 Status = {
   'Offline': 0,
   'Online': 1
 }
-
 ScadaConfigMapper = {
   'name': 'Name',
   'description': 'Desc',
@@ -61,7 +53,6 @@ ScadaConfigMapper = {
   'type': 'Type',
   'heartbeat': 'Hbt'
 }
-
 DeviceConfigMapper = {
   'name': 'Name',
   'comPortNumber': 'PNbr',
@@ -70,7 +61,6 @@ DeviceConfigMapper = {
   'ip': 'IP',
   'port': 'Port'
 }
-
 TagConfigMapper = {
   'type': 'Type',
   'description': 'Desc',

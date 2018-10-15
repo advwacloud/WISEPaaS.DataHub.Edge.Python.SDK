@@ -5,14 +5,14 @@ import urllib.request
 import threading
 import paho.mqtt.client as mqtt
 
-import WISEPaaS_SCADA.Common.Constants as constant
-import WISEPaaS_SCADA.Common.Topic as mqttTopic
-from WISEPaaS_SCADA.Model.Edge import MQTTOptions, TimeSyncCommand, ConfigAck, WriteValueCommand, Device, Tag
-from WISEPaaS_SCADA.Model.MQTTMessage import *
-import WISEPaaS_SCADA.Common.Converter as Converter
-from WISEPaaS_SCADA.Model.Event import *
-from WISEPaaS_SCADA.Common.Utils import RepeatedTimer
-from WISEPaaS_SCADA.Common.DataRecoverHelper import DataRecoverHelper
+import wisepaasscadasdk.Common.Constants as constant
+import wisepaasscadasdk.Common.Topic as mqttTopic
+from wisepaasscadasdk.Model.Edge import MQTTOptions, TimeSyncCommand, ConfigAck, WriteValueCommand, Device, Tag
+from wisepaasscadasdk.Model.MQTTMessage import *
+import wisepaasscadasdk.Common.Converter as Converter
+from wisepaasscadasdk.Model.Event import *
+from wisepaasscadasdk.Common.Utils import RepeatedTimer
+from wisepaasscadasdk.Common.DataRecoverHelper import DataRecoverHelper
 
 class EdgeAgent():
 

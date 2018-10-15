@@ -1,6 +1,6 @@
-from WISEPaaS_SCADA.Model.MQTTMessage import *
-import WISEPaaS_SCADA.Common.Constants as constant
-from WISEPaaS_SCADA.Model.Edge import *
+from wisepaasscadasdk.Model.MQTTMessage import *
+import wisepaasscadasdk.Common.Constants as constant
+from wisepaasscadasdk.Model.Edge import *
 
 def convertData(data = None):
   try:
