@@ -159,6 +159,8 @@ class EdgeAgent():
         (result, payload) = Converter.convertCreateorUpdateConfig(action = action, scadaId = scadaId, config = edgeConfig, heartbeat = self.__options.heartbeat)
       elif action == constant.ActionType['Delete']:
         (result, payload) = Converter.convertDeleteConfig(action = action, scadaId = scadaId, config = edgeConfig)
+      elif action == constant.ActionType['Delsert']:
+        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, scadaId = scadaId, config = edgeConfig, heartbeat = self.__options.heartbeat)
       else:
         raise ValueError('action is not exist') 
       topic = mqttTopic.ConfigTopic.format(self.__options.scadaId)

@@ -58,8 +58,6 @@ def convertCreateorUpdateConfig(action = None, scadaId = None, config = None, he
       if not type(device) is DeviceConfig:
         raise ValueError('config.scada.device type is invalid')
       (result, error) = device.isValid()
-      if action == constant.ActionType['Create'] and not result:
-        raise error
       payload.addDeviceConfig(scadaId, deviceId = device.id, config = device)
       for tag in device.analogTagList:
         tag.type = constant.TagType['Analog']

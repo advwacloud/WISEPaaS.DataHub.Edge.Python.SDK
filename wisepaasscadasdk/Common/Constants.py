@@ -9,7 +9,8 @@ DataMaxTagCount = 100
 ActionType = {
   'Create': 1,
   'Update': 2,
-  'Delete': 3
+  'Delete': 3,
+  'Delsert': 4
 }
 ConnectType = {
   'MQTT': 'MQTT',
