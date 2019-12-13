@@ -102,7 +102,7 @@ class ScadaConfig():
     return (True, None)
 
 class DeviceConfig():
-  def __init__(self, id = None, name = None, comPortNumber = None, deviceType = None, description = None, ip = None, port = None):
+  def __init__(self, id = None, name = None, comPortNumber = None, deviceType = None, description = None, ip = None, port = None, retentionPolicyName = None):
     self.id = id
     self.name = name
     self.comPortNumber = comPortNumber
@@ -110,6 +110,7 @@ class DeviceConfig():
     self.description = description
     self.ip = ip
     self.port = port
+    self.retentionPolicyName = retentionPolicyName
     self.analogTagList = []
     self.discreteTagList = []
     self.textTagList = []

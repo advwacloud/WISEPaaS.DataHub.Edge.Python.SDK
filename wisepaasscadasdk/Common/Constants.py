@@ -58,7 +58,8 @@ DeviceConfigMapper = {
   'type': 'Type',
   'description': 'Desc',
   'ip': 'IP',
-  'port': 'Port'
+  'port': 'Port',
+  'retentionPolicyName': 'RP'
 }
 TagConfigMapper = {
   'type': 'Type',
