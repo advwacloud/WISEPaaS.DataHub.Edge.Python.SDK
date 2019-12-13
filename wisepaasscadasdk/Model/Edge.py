@@ -86,9 +86,7 @@ class EdgeConfig():
     self.scada = {}
 
 class ScadaConfig():
-  def __init__(self, name = None, description = None, primaryIP = None, backupIP = None, primaryPort = None, backupPort = None, scadaType = None):
-    self.name = name
-    self.description = description
+  def __init__(self, primaryIP = None, backupIP = None, primaryPort = None, backupPort = None, scadaType = None):
     self.primaryIP = primaryIP
     self.backupIP = backupIP
     self.primaryPort = primaryPort
@@ -97,8 +95,6 @@ class ScadaConfig():
     self.deviceList = []
   
   def isValid(self):
-    if self.name is None:
-      return (False, ValueError('name is necessary'))
     if self.type is None:
       return (False, ValueError('scadaType is necessary'))
     if not (self.type in constant.EdgeType.values()):

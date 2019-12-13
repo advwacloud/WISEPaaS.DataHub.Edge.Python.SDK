@@ -44,8 +44,6 @@ Status = {
   'Online': 1
 }
 ScadaConfigMapper = {
-  'name': 'Name',
-  'description': 'Desc',
   'primaryIP': 'PIP',
   'backupIP': 'BIP',
   'primaryPort': 'PPort',
