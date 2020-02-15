@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="WISE_PaaS_DataHub_Edge_Python_SDK",
-    version="1.0.10",
+    version="1.1.0",
     author="Stacy Yeh",
     author_email="stacy.yeh@advantech.com",
-    description="The WISEPaaS_DataHub_Edge_Python_SDK package allows developers to write Python applications which access the WISE-PaaS/DataHub Platform via MQTT or MQTT over the secure webSocket protocol.",
+    description="WISEPaaS_DataHub_Edge_Python_SDK package allows developers to write Python applications which access the WISE-PaaS/DataHub Platform via MQTT or MQTT over the secure webSocket protocol.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/advwacloud/WISEPaaS.DataHub.Edge.Python.SDK",

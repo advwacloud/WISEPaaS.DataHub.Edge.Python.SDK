@@ -1,6 +1,4 @@
 # WISEPaaS.DataHub.Edge.Python.SDK
 The WISEPaaS.DataHub.Edge.Python.SDK package allows developers to write Python applications which access the WISE-PaaS/DataHub Platform via MQTT or MQTT over the secure webSocket protocol.
 
-* [SDK Manual](https://advwacloud.gitbooks.io/wise-paas-scada-edge-sdk-manual/content/)
-
-* [WISE-PaaS Technical portal](https://portal-technical.wise-paas.com/)
+* [WISE-PaaS/DataHub User Guide](https://docs.wise-paas.advantech.com/en/Guides_and_API_References/Data_Acquisition/1579073100328245315)
