@@ -1,5 +1,5 @@
-name = "wisepaasscadasdk"
+name = "wisepaasdatahubedgesdk"
 
-from wisepaasscadasdk.EdgeAgent import EdgeAgent
-from wisepaasscadasdk.Common.Constants import Constants
-from wisepaasscadasdk.Model.Edge import EdgeAgentOptions, MQTTOptions, DCCSOptions, EdgeData, EdgeTag, EdgeStatus, EdgeDeviceStatus, EdgeConfig, ScadaConfig, DeviceConfig, AnalogTagConfig, DiscreteTagConfig, TextTagConfig
+from wisepaasdatahubedgesdk.EdgeAgent import EdgeAgent
+from wisepaasdatahubedgesdk.Common.Constants import Constants
+from wisepaasdatahubedgesdk.Model.Edge import EdgeAgentOptions, MQTTOptions, DCCSOptions, EdgeData, EdgeTag, EdgeStatus, EdgeDeviceStatus, EdgeConfig, NodeConfig, DeviceConfig, AnalogTagConfig, DiscreteTagConfig, TextTagConfig

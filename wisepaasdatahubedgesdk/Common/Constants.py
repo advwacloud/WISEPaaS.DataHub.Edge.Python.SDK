@@ -44,11 +44,7 @@ Status = {
   'Offline': 0,
   'Online': 1
 }
-ScadaConfigMapper = {
-  'primaryIP': 'PIP',
-  'backupIP': 'BIP',
-  'primaryPort': 'PPort',
-  'backupPort': 'BPort',
+NodeConfigMapper = {
   'type': 'Type',
   'heartbeat': 'Hbt'
 }

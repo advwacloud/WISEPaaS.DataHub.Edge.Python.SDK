@@ -1,7 +1,7 @@
 import sqlite3
 import os
 import threading
-import wisepaasscadasdk.Common.Constants as constants
+import wisepaasdatahubedgesdk.Common.Constants as constants
 
 class DataRecoverHelper:
   def __init__(self):

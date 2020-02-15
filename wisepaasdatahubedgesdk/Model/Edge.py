@@ -1,11 +1,11 @@
 import datetime
 
-import wisepaasscadasdk.Common.Constants as constant
+import wisepaasdatahubedgesdk.Common.Constants as constant
 
 class EdgeAgentOptions():
   def __init__(self, 
     reconnectInterval = 1, # seconds
-    scadaId = 'scadaId', # None
+    nodeId = 'nodeId', # None
     deviceId = 'deviceId', # None
     type = constant.EdgeType['Gateway'],
     heartbeat = constant.HeartbeatInterval,
@@ -16,7 +16,7 @@ class EdgeAgentOptions():
     DCCS = None
   ):
     self.reconnectInterval = reconnectInterval
-    self.scadaId = scadaId
+    self.nodeId = nodeId
     self.deviceId = deviceId
     self.type = type
     self.heartbeat = heartbeat
@@ -26,8 +26,8 @@ class EdgeAgentOptions():
     self.MQTT = MQTT
     self.DCCS = DCCS
 
-    if self.scadaId is None:
-      raise ValueError('scadaId can not be empty')
+    if self.nodeId is None:
+      raise ValueError('nodeId can not be empty')
     if self.heartbeat < 1:
       self.hearbeat = 1
 
@@ -85,20 +85,16 @@ class EdgeConfig():
   def __init__(self):
     self.scada = {}
 
-class ScadaConfig():
-  def __init__(self, primaryIP = None, backupIP = None, primaryPort = None, backupPort = None, scadaType = None):
-    self.primaryIP = primaryIP
-    self.backupIP = backupIP
-    self.primaryPort = primaryPort
-    self.backupPort = backupPort
-    self.type = scadaType
+class NodeConfig():
+  def __init__(self, nodeType = None):
+    self.type = nodeType
     self.deviceList = []
   
   def isValid(self):
     if self.type is None:
-      return (False, ValueError('scadaType is necessary'))
+      return (False, ValueError('nodeType is necessary'))
     if not (self.type in constant.EdgeType.values()):
-      return (False, ValueError('scadaType is invalid'))
+      return (False, ValueError('nodeType is invalid'))
     return (True, None)
 
 class DeviceConfig():

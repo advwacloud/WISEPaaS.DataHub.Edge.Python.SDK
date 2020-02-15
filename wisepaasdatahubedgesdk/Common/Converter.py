@@ -1,6 +1,6 @@
-from wisepaasscadasdk.Model.MQTTMessage import *
-import wisepaasscadasdk.Common.Constants as constant
-from wisepaasscadasdk.Model.Edge import *
+from wisepaasdatahubedgesdk.Model.MQTTMessage import *
+import wisepaasdatahubedgesdk.Common.Constants as constant
+from wisepaasdatahubedgesdk.Model.Edge import *
 
 def convertData(data = None):
   try:
@@ -40,60 +40,60 @@ def convertDeviceStatus(status = None):
     print('convert status fail', str(error))
     return (False, None)
 
-def convertCreateorUpdateConfig(action = None, scadaId = None, config = None, heartbeat = constant.HeartbeatInterval):
+def convertCreateorUpdateConfig(action = None, nodeId = None, config = None, heartbeat = constant.HeartbeatInterval):
   try:
-    if not config or not scadaId:
+    if not config or not nodeId:
       return (False, None)
-    payload = ConfigMessage(action, scadaId)
+    payload = ConfigMessage(action, nodeId)
 
-    scada = config.scada
-    if not type(scada) is ScadaConfig:
-      raise ValueError('config.scada type is invalid')
-    scada.heartbeat = heartbeat
-    (result, error) = scada.isValid()
+    node = config.node
+    if not type(node) is NodeConfig:
+      raise ValueError('config.node type is invalid')
+    node.heartbeat = heartbeat
+    (result, error) = node.isValid()
     if action == constant.ActionType['Create'] and not result:
       raise error
-    payload.addScadaConfig(scadaId, scada)
-    for device in scada.deviceList:
+    payload.addNodeConfig(nodeId, node)
+    for device in node.deviceList:
       if not type(device) is DeviceConfig:
-        raise ValueError('config.scada.device type is invalid')
+        raise ValueError('config.node.device type is invalid')
       (result, error) = device.isValid()
-      payload.addDeviceConfig(scadaId, deviceId = device.id, config = device)
+      payload.addDeviceConfig(nodeId, deviceId = device.id, config = device)
       for tag in device.analogTagList:
         tag.type = constant.TagType['Analog']
-        payload.addTagConfig(scadaId, deviceId = device.id, tagName = tag.name, config = tag)
+        payload.addTagConfig(nodeId, deviceId = device.id, tagName = tag.name, config = tag)
       for tag in device.discreteTagList:
         tag.type = constant.TagType['Discrete']
-        payload.addTagConfig(scadaId, deviceId = device.id, tagName = tag.name, config = tag)
+        payload.addTagConfig(nodeId, deviceId = device.id, tagName = tag.name, config = tag)
       for tag in device.textTagList:
         tag.type = constant.TagType['Text']
-        payload.addTagConfig(scadaId, deviceId = device.id, tagName = tag.name, config = tag)
+        payload.addTagConfig(nodeId, deviceId = device.id, tagName = tag.name, config = tag)
     return (True, payload.getJson())
   except Exception as error:
     print('convert create config fail', str(error))
     return (False, None)
 
-def convertDeleteConfig(action = None, scadaId = None, config = None):
+def convertDeleteConfig(action = None, nodeId = None, config = None):
   try:
-    if not (config or scadaId):
+    if not (config or nodeId):
       return (False, None)
-    payload = ConfigMessage(action, scadaId)
+    payload = ConfigMessage(action, nodeId)
 
-    scada = config.scada
-    if not type(scada) is ScadaConfig:
-      raise ValueError('config.scada type is invalid')
-    payload.deleteScadaConfig(scadaId)
-    for device in scada.deviceList:
-      payload.deleteDeviceConfig(scadaId, deviceId = device.id)
+    node = config.node
+    if not type(node) is NodeConfig:
+      raise ValueError('config.node type is invalid')
+    payload.deleteNodeConfig(nodeId)
+    for device in node.deviceList:
+      payload.deleteDeviceConfig(nodeId, deviceId = device.id)
       for listName in ['analogTagList', 'discreteTagList', 'textTagList']:
         for tag in getattr(device, listName):
-          payload.deleteDeviceConfig(scadaId, deviceId = device.id)
+          payload.deleteDeviceConfig(nodeId, deviceId = device.id)
         for tag in device.analogTagList:
-          payload.deleteTagConfig(scadaId, deviceId = device.id, tagName = tag.name)
+          payload.deleteTagConfig(nodeId, deviceId = device.id, tagName = tag.name)
         for tag in device.discreteTagList:
-          payload.deleteTagConfig(scadaId, deviceId = device.id, tagName = tag.name)
+          payload.deleteTagConfig(nodeId, deviceId = device.id, tagName = tag.name)
         for tag in device.textTagList:
-          payload.deleteTagConfig(scadaId, deviceId = device.id, tagName = tag.name)
+          payload.deleteTagConfig(nodeId, deviceId = device.id, tagName = tag.name)
     return (True, payload.getJson())
   except Exception as error:
     print('convert create config fail', str(error))

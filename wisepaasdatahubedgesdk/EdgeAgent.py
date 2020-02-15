@@ -5,14 +5,14 @@ import urllib.request
 import threading
 import paho.mqtt.client as mqtt
 
-import wisepaasscadasdk.Common.Constants as constant
-import wisepaasscadasdk.Common.Topic as mqttTopic
-from wisepaasscadasdk.Model.Edge import MQTTOptions, TimeSyncCommand, ConfigAck, WriteValueCommand, Device, Tag
-from wisepaasscadasdk.Model.MQTTMessage import *
-import wisepaasscadasdk.Common.Converter as Converter
-from wisepaasscadasdk.Model.Event import *
-from wisepaasscadasdk.Common.Utils import RepeatedTimer
-from wisepaasscadasdk.Common.DataRecoverHelper import DataRecoverHelper
+import wisepaasdatahubedgesdk.Common.Constants as constant
+import wisepaasdatahubedgesdk.Common.Topic as mqttTopic
+from wisepaasdatahubedgesdk.Model.Edge import MQTTOptions, TimeSyncCommand, ConfigAck, WriteValueCommand, Device, Tag
+from wisepaasdatahubedgesdk.Model.MQTTMessage import *
+import wisepaasdatahubedgesdk.Common.Converter as Converter
+from wisepaasdatahubedgesdk.Model.Event import *
+from wisepaasdatahubedgesdk.Common.Utils import RepeatedTimer
+from wisepaasdatahubedgesdk.Common.DataRecoverHelper import DataRecoverHelper
 
 class EdgeAgent():
 
@@ -40,7 +40,7 @@ class EdgeAgent():
       userName = self.__options.MQTT.userName
       password = self.__options.MQTT.password
       transport = self.__options.MQTT.protocalType
-      topic = mqttTopic.ScadaConnTopic.format(self.__options.scadaId)
+      topic = mqttTopic.NodeConnTopic.format(self.__options.nodeId)
 
       if self.__client is None:
         clientId = 'EdgeAgent_' + str(uuid.uuid4())
@@ -66,9 +66,9 @@ class EdgeAgent():
 
   def __disconnect(self):
     if self.__options.type == constant.EdgeType['Gateway']:
-      topic = mqttTopic.ScadaConnTopic.format(self.__options.scadaId)
+      topic = mqttTopic.NodeConnTopic.format(self.__options.nodeId)
     else:
-      topic = mqttTopic.DeviceConnTopic.format(self.__options.scadaId, self.__options.deviceId)
+      topic = mqttTopic.DeviceConnTopic.format(self.__options.nodeId, self.__options.deviceId)
     disconnectPayload = DisconnectMessage().getJson()
     infot = self.__client.publish(topic, payload = disconnectPayload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = True)
     infot.wait_for_publish()
@@ -103,7 +103,7 @@ class EdgeAgent():
     if self.__recoverHelper is None or not self.__recoverHelper.isDataExist:
       return
     payloads = self.__recoverHelper.read()
-    topic = mqttTopic.DataTopic.format(self.__options.scadaId)
+    topic = mqttTopic.DataTopic.format(self.__options.nodeId)
     for payload in payloads:
       self.__client.publish(topic, payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False)
 
@@ -111,9 +111,9 @@ class EdgeAgent():
     if self.__client is None or not self.__client.connected_flag: 
       return
     if self.__options.type == constant.EdgeType['Gateway']:
-      topic = mqttTopic.ScadaConnTopic.format(self.__options.scadaId)
+      topic = mqttTopic.NodeConnTopic.format(self.__options.nodeId)
     else:
-      topic = mqttTopic.DeviceConnTopic.format(self.__options.scadaId, self.__options.deviceId)
+      topic = mqttTopic.DeviceConnTopic.format(self.__options.nodeId, self.__options.deviceId)
     heartbeatPayload = HeartbeatMessage().getJson()
     self.__client.publish(topic, payload = heartbeatPayload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = True)
     # second = self.__heartbeatInterval
@@ -129,7 +129,7 @@ class EdgeAgent():
           if not self.isConnected():
             self.__recoverHelper.write(payload)
           else:
-            topic = mqttTopic.DataTopic.format(self.__options.scadaId)
+            topic = mqttTopic.DataTopic.format(self.__options.nodeId)
             self.__publishData(topic, payload = payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False)
             #self._client.publish(topic, payload = payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False)"""
           # self.__recoverHelper.write(payload)
@@ -143,7 +143,7 @@ class EdgeAgent():
     try:
       (result, payload) = Converter.convertDeviceStatus(deviceStatus)
       if result:
-        topic = mqttTopic.ScadaConnTopic.format(self.__options.scadaId)
+        topic = mqttTopic.NodeConnTopic.format(self.__options.nodeId)
         self.__client.publish(topic, payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = True)
       return result
     except Exception as error:
@@ -152,18 +152,18 @@ class EdgeAgent():
 
   def __uploadConfig(self, action, edgeConfig):
     try:
-      scadaId = self.__options.scadaId
+      nodeId = self.__options.nodeId
       if action == constant.ActionType['Create']:
-        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, scadaId = scadaId, config = edgeConfig, heartbeat = self.__options.heartbeat)
+        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, nodeId = nodeId, config = edgeConfig, heartbeat = self.__options.heartbeat)
       elif action == constant.ActionType['Update']:
-        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, scadaId = scadaId, config = edgeConfig, heartbeat = self.__options.heartbeat)
+        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, nodeId = nodeId, config = edgeConfig, heartbeat = self.__options.heartbeat)
       elif action == constant.ActionType['Delete']:
-        (result, payload) = Converter.convertDeleteConfig(action = action, scadaId = scadaId, config = edgeConfig)
+        (result, payload) = Converter.convertDeleteConfig(action = action, nodeId = nodeId, config = edgeConfig)
       elif action == constant.ActionType['Delsert']:
-        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, scadaId = scadaId, config = edgeConfig, heartbeat = self.__options.heartbeat)
+        (result, payload) = Converter.convertCreateorUpdateConfig(action = action, nodeId = nodeId, config = edgeConfig, heartbeat = self.__options.heartbeat)
       else:
         raise ValueError('action is not exist') 
-      topic = mqttTopic.ConfigTopic.format(self.__options.scadaId)
+      topic = mqttTopic.ConfigTopic.format(self.__options.nodeId)
       self.__client.publish(topic, payload = payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False)
       return result
     except Exception as error:
@@ -204,12 +204,12 @@ class EdgeAgent():
       print('Connected OK Returned code=', rc)
       # subscribe
       if self.__options.type == constant.EdgeType['Gateway']:
-        cmdTopic = mqttTopic.ScadaCmdTopic.format(self.__options.scadaId)
-        connTopic = mqttTopic.ScadaConnTopic.format(self.__options.scadaId)
+        cmdTopic = mqttTopic.NodeCmdTopic.format(self.__options.nodeId)
+        connTopic = mqttTopic.NodeConnTopic.format(self.__options.nodeId)
       else:
-        cmdTopic = mqttTopic.DeviceCmdTopic.format(self.__options.scadaId, self.__options.deviceId)
-        connTopic = mqttTopic.DeviceConnTopic.format(self.__options.scadaId, self.__options.deviceId)
-      ackTopic = mqttTopic.AckTopic.format(self.__options.scadaId)
+        cmdTopic = mqttTopic.DeviceCmdTopic.format(self.__options.nodeId, self.__options.deviceId)
+        connTopic = mqttTopic.DeviceConnTopic.format(self.__options.nodeId, self.__options.deviceId)
+      ackTopic = mqttTopic.AckTopic.format(self.__options.nodeId)
       for topic in [ackTopic, cmdTopic]:
         (result, mid) = self.__client.subscribe(topic, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'])
         if result == 0:
