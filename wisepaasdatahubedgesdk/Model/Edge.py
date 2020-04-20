@@ -86,7 +86,7 @@ class EdgeConfig():
     self.scada = {}
 
 class NodeConfig():
-  def __init__(self, nodeType = None):
+  def __init__(self, nodeType = constant.EdgeType['Gateway']):
     self.type = nodeType
     self.deviceList = []
   
