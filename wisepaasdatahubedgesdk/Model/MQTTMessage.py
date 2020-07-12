@@ -50,6 +50,8 @@ class DataMessage(Message):
     if not (deviceId in self.message['d']):
       self.message['d'][deviceId] = {}
     self.message['d'][deviceId][tagName] = value
+  def setTimestamp(self, timestamp):
+    self.message['ts'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
 class DeviceStatusMessage(Message):
   def __init__(self):

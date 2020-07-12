@@ -11,10 +11,10 @@ def convertData(data = None):
     dataMessage = None
     tagList = data.tagList
     tagList = sorted(tagList, key = lambda tag: tag.deviceId)
-
     for tag in tagList:
       if dataMessage is None:
         dataMessage = DataMessage()
+        dataMessage.setTimestamp(data.timestamp)
       dataMessage.setTagValue(tag.deviceId, tag.tagName, tag.value)
       count += 1
       if count == constant.DataMaxTagCount:
