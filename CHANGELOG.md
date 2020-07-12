@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2020-07-10
+### Changed
+- Support to customize data time
+
 ## [1.1.0] - 2020-02-15
 ### Added
 - Add "RetentionPolicyName" property to DeviceConfig
