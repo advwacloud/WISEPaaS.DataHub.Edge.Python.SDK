@@ -63,7 +63,7 @@ class DCCSOptions():
 class EdgeData():
   def __init__(self):
     self.tagList = []
-    self.timestamp = datetime.datetime.now()
+    self.timestamp = datetime.datetime.utcnow()
 
 class EdgeTag():
   def __init__(self, deviceId = None, tagName = None, value = object()):
@@ -79,7 +79,6 @@ class EdgeStatus():
 class EdgeDeviceStatus():
   def __init__(self):
     self.deviceList = []
-    self.timestamp = datetime.datetime.now().isoformat()
 
 class EdgeConfig():
   def __init__(self):
@@ -155,7 +154,7 @@ class TextTagConfig(TagConfig):
     super(TextTagConfig, self).__init__(name = name, description = description, readOnly = readOnly)
 
 class TimeSyncCommand():
-  def __init__(self, time = datetime.datetime.now()):
+  def __init__(self, time = datetime.datetime.utcnow()):
     self.UTCTime = time
 
 class ConfigAck():
@@ -165,7 +164,6 @@ class ConfigAck():
 class WriteValueCommand():
   def __init__(self):
     self.deviceList = []
-    self.timestamp = datetime.datetime.now()
 
 class Device():
   def __init__(self, id = None):
