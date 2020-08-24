@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2020-08-24
+### Fixed
+- Fix the default timestamp is in local time not UTC time problem
+
 ## [1.1.1] - 2020-07-10
 ### Changed
 - Support to customize data time
