@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.1.3] - 2020-08-30
+### Fixed
+- The timestamp of EdgeData is in local time, and it is converted to UTC when message is published. (consistent with other SDKs)
+
 ## [1.1.2] - 2020-08-24
 ### Fixed
 - Fix the default timestamp is in local time not UTC time problem
