@@ -1,14 +1,15 @@
 import json
 import datetime
+import time
 import wisepaasdatahubedgesdk.Common.Constants as constant
 
-format = '%Y-%m-%dT%H:%M:%S%z'
+format = '%Y-%m-%dT%H:%M:%S.%fZ'
 
 class Message(dict):
   def __init__(self):
     self.message = {}
     self.message['d'] = {}
-    self.message['ts'] = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    self.message['ts'] = datetime.datetime.utcnow().strftime(format)
   def __repr__(self):
     return repr(self.__dict__)
   def getJson(self):
@@ -51,7 +52,8 @@ class DataMessage(Message):
       self.message['d'][deviceId] = {}
     self.message['d'][deviceId][tagName] = value
   def setTimestamp(self, timestamp):
-    self.message['ts'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    ts = time.mktime(timestamp.timetuple())
+    self.message['ts'] = datetime.datetime.utcfromtimestamp(ts).replace(microsecond=timestamp.microsecond).strftime(format)
 
 class DeviceStatusMessage(Message):
   def __init__(self):
