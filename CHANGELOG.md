@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.1.4] - 2020-09-15
+### Fixed
+- array size of TagConfig set invalid issue
+
 ## [1.1.3] - 2020-08-30
 ### Fixed
 - The timestamp of EdgeData is in local time, and it is converted to UTC when message is published. (consistent with other SDKs)
