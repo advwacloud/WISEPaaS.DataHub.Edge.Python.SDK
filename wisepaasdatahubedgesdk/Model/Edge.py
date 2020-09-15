@@ -130,7 +130,7 @@ class TagConfig():
 
 class AnalogTagConfig(TagConfig):
   def __init__(self, name = None, description = None, readOnly = None, arraySize = None, spanHigh = None, spanLow = None, engineerUnit = None, integerDisplayFormat = None, fractionDisplayFormat = None):
-    super(AnalogTagConfig, self).__init__(name = name, description = description, readOnly = readOnly)
+    super(AnalogTagConfig, self).__init__(name = name, description = description, readOnly = readOnly, arraySize = arraySize)
     self.spanHigh = spanHigh
     self.spanLow = spanLow
     self.engineerUnit = engineerUnit
@@ -139,7 +139,7 @@ class AnalogTagConfig(TagConfig):
 
 class DiscreteTagConfig(TagConfig):
   def __init__(self, name = None, description = None, readOnly = None, arraySize = None, state0 = None, state1 = None, state2 = None, state3 = None, state4 = None, state5 = None, state6 = None, state7 = None):
-    super(DiscreteTagConfig, self).__init__(name = name, description = description, readOnly = readOnly)
+    super(DiscreteTagConfig, self).__init__(name = name, description = description, readOnly = readOnly, arraySize = arraySize)
     self.state0 = state0
     self.state1 = state1
     self.state2 = state2
@@ -151,7 +151,7 @@ class DiscreteTagConfig(TagConfig):
 
 class TextTagConfig(TagConfig):
   def __init__(self, name = None, description = None, readOnly = None, arraySize = None):
-    super(TextTagConfig, self).__init__(name = name, description = description, readOnly = readOnly)
+    super(TextTagConfig, self).__init__(name = name, description = description, readOnly = readOnly, arraySize = arraySize)
 
 class TimeSyncCommand():
   def __init__(self, time = datetime.datetime.utcnow()):
