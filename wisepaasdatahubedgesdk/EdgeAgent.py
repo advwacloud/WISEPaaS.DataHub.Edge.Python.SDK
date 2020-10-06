@@ -245,45 +245,44 @@ class EdgeAgent():
       self.__on_connected(self, isConnected = self.__client.connected_flag)
 
   def __on_message(self, client, userdata, msg):
-    try:
-      message = str(msg.payload.decode("utf-8"))
-      message = json.loads(message)
-      # topic = msg.topic
-      if not message or not message['d']:
+    message = str(msg.payload.decode("utf-8"))
+    message = json.loads(message)
+    # topic = msg.topic
+    if not message or not message['d']:
+      return
+    if 'Cmd' in message['d']:
+      if not message['d']['Cmd']:
         return
-      if 'Cmd' in message['d']:
-        if not message['d']['Cmd']:
-          return
-        cmd = message['d']['Cmd']
-        if cmd == 'WV':
-          messageType = constant.MessageType['WriteValue']
-          writeValueMessage = WriteValueCommand()
-          if message['d']['Val']:
-            for deviceId, tags in message['d']['Val'].items():
-              d = Device(deviceId)
-              for tagName, value in tags.items():
-                d.tagList.append(Tag(tagName, value))
-              writeValueMessage.deviceList.append(d)
-          message = writeValueMessage
-        elif cmd == "WC":
-          return
-        elif cmd == "TSyn":
-          messageType = constant.MessageType['TimeSync']
-          UTC = float(message['d']['UTC'])
-          miniDateTime = datetime.datetime(1970, 1, 1, 0, 0, 0, 0)
-          UTC = miniDateTime + datetime.timedelta(seconds = UTC)
-          message = TimeSyncCommand(UTC)
-        else:
-          return
-      elif 'Cfg' in message['d']:
-        messageType = constant.MessageType['ConfigAck']
-        result = bool(message['d']['Cfg'])
-        message = ConfigAck(result = result)
+      cmd = message['d']['Cmd']
+      if cmd == 'WV':
+        messageType = constant.MessageType['WriteValue']
+        writeValueMessage = WriteValueCommand()
+        if message['d']['Val']:
+          for deviceId, tags in message['d']['Val'].items():
+            d = Device(deviceId)
+            for tagName, value in tags.items():
+              d.tagList.append(Tag(tagName, value))
+            writeValueMessage.deviceList.append(d)
+        message = writeValueMessage
+      elif cmd == "WC":
+        return
+      elif cmd == "TSyn":
+        messageType = constant.MessageType['TimeSync']
+        UTC = float(message['d']['UTC'])
+        miniDateTime = datetime.datetime(1970, 1, 1, 0, 0, 0, 0)
+        UTC = miniDateTime + datetime.timedelta(seconds = UTC)
+        message = TimeSyncCommand(UTC)
       else:
         return
+    elif 'Cfg' in message['d']:
+      messageType = constant.MessageType['ConfigAck']
+      result = bool(message['d']['Cfg'])
+      message = ConfigAck(result = result)
+    else:
+      return
+    
+    if self.__on_messageReceived:
       self.__on_messageReceived(self, MessageReceivedEventArgs(msgType = messageType, message = message))
-    except Exception as error:
-      print('decode message fail:' + str(error))
 
   def __on_disconnect(self, client, userdata, rc):
     if rc == 0:
