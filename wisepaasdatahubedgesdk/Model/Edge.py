@@ -82,7 +82,7 @@ class EdgeDeviceStatus():
 
 class EdgeConfig():
   def __init__(self):
-    self.scada = {}
+    self.node = NodeConfig()
 
 class NodeConfig():
   def __init__(self, nodeType = constant.EdgeType['Gateway']):
