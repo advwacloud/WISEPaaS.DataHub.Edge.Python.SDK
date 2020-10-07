@@ -262,14 +262,6 @@ class EdgeAgent():
                 d.tagList.append(Tag(tagName, value))
               writeValueMessage.deviceList.append(d)
           message = writeValueMessage
-        elif cmd == "WC":
-          return
-        elif cmd == "TSyn":
-          messageType = constant.MessageType['TimeSync']
-          UTC = float(message['d']['UTC'])
-          miniDateTime = datetime.datetime(1970, 1, 1, 0, 0, 0, 0)
-          UTC = miniDateTime + datetime.timedelta(seconds = UTC)
-          message = TimeSyncCommand(UTC)
         else:
           return
       elif 'Cfg' in message['d']:
