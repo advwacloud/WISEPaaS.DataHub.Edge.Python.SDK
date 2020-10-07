@@ -2,6 +2,7 @@ import sqlite3
 import os
 import threading
 import wisepaasdatahubedgesdk.Common.Constants as constants
+import wisepaasdatahubedgesdk.Common.Logger as logger
 
 class DataRecoverHelper:
   def __init__(self):
@@ -27,7 +28,7 @@ class DataRecoverHelper:
       return result
     except Exception as error:
       self.__lock.release()
-      print(error)
+      logger.printError(e = error, msg = 'Check recovery data process error !')
       return False
 
   def read(self, count = constants.DefaultReadRecordCount):
@@ -53,7 +54,7 @@ class DataRecoverHelper:
       return messages
     except Exception as error:
       self.__lock.release()
-      print(error)
+      logger.printError(e = error, msg = 'Read recovery data process error !')
       return []
 
   def write(self, message = None):
@@ -73,5 +74,5 @@ class DataRecoverHelper:
       return True
     except Exception as error:
       self.__lock.release()
-      print(error)
+      logger.printError(e = error, msg = 'Write recovery data process error !')
       return False

@@ -13,6 +13,7 @@ import wisepaasdatahubedgesdk.Common.Converter as Converter
 from wisepaasdatahubedgesdk.Model.Event import *
 from wisepaasdatahubedgesdk.Common.Utils import RepeatedTimer
 from wisepaasdatahubedgesdk.Common.DataRecoverHelper import DataRecoverHelper
+import wisepaasdatahubedgesdk.Common.Logger as logger
 
 class EdgeAgent():
 
@@ -49,7 +50,6 @@ class EdgeAgent():
         self.__client.on_connect = self.__on_connect
         self.__client.on_message = self.__on_message
         self.__client.on_disconnect = self.__on_disconnect
-        self.__client.on_subscribe = self.__on_subscribe
 
       self.__client.username_pw_set(userName, password)
       willPayload = LastWillMessage().getJson()
@@ -57,12 +57,12 @@ class EdgeAgent():
       # TLS
       self.__client.reconnect_delay_set(min_delay = self.__options.reconnectInterval, max_delay = self.__options.reconnectInterval)
     except Exception as error:
-      print('connection configuration fail', str(error))
+      logger.printError(e = error, msg = 'Connection setting error !')
     try:
       self.__client.loop_start()
       self.__client.connect(host, port)
     except Exception as error:
-      print('connection fail', str(error))
+      logger.printError(e = error, msg = 'Connect error !')
 
   def __disconnect(self):
     if self.__options.type == constant.EdgeType['Gateway']:
@@ -80,9 +80,6 @@ class EdgeAgent():
       uri = '{0}/v1/serviceCredentials/{1}'.format(self.__options.DCCS.apiUrl, self.__options.DCCS.credentialKey)
       response = urllib.request.urlopen(uri).read().decode('utf-8').replace('"', '\"')
       response = json.loads(response)
-    except Exception as error:
-      print('Get DCCS fail', str(error))
-    try:
       host = response['serviceHost']
       if self.__options.useSecure:
         port = response['credential']['protocols']['mqtt+ssl']['port']
@@ -95,7 +92,7 @@ class EdgeAgent():
       mqttOptions = MQTTOptions(hostName = host, port = port, userName = userName, password = password)
       self.__options.MQTT = mqttOptions
     except Exception as error:
-      print('DCCS fail', str(error))
+      logger.printError(e = error, msg = 'Get MQTT credentials from DCCS failed !')
 
   def __dataRecover(self):
     if not self.isConnected:
@@ -136,7 +133,7 @@ class EdgeAgent():
           # test data recover
       return result
     except Exception as error:
-      print('sendData fail', str(error))
+      logger.printError(e = error, msg = 'Send data error !')
       return False
 
   def __sendDeviceStatus(self, deviceStatus):
@@ -147,7 +144,7 @@ class EdgeAgent():
         self.__client.publish(topic, payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = True)
       return result
     except Exception as error:
-      print('send device status fail: %s', str(error))
+      logger.printError(e = error, msg = 'Send device status error !')
       return False
 
   def __uploadConfig(self, action, edgeConfig):
@@ -162,12 +159,12 @@ class EdgeAgent():
       elif action == constant.ActionType['Delsert']:
         (result, payload) = Converter.convertCreateorUpdateConfig(action = action, nodeId = nodeId, config = edgeConfig, heartbeat = self.__options.heartbeat)
       else:
-        raise ValueError('action is not exist') 
+        raise ValueError('config action is invalid !') 
       topic = mqttTopic.ConfigTopic.format(self.__options.nodeId)
       self.__client.publish(topic, payload = payload, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False)
       return result
     except Exception as error:
-      print('upload config fail: %s', str(error))
+      logger.printError(e = error, msg = 'Upload config error !')
       return False
 
   def __publishConfig(self, topic = None, payload = None, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False):
@@ -245,44 +242,48 @@ class EdgeAgent():
       self.__on_connected(self, isConnected = self.__client.connected_flag)
 
   def __on_message(self, client, userdata, msg):
-    message = str(msg.payload.decode("utf-8"))
-    message = json.loads(message)
-    # topic = msg.topic
-    if not message or not message['d']:
-      return
-    if 'Cmd' in message['d']:
-      if not message['d']['Cmd']:
+    try:
+      message = str(msg.payload.decode("utf-8"))
+      message = json.loads(message)
+      # topic = msg.topic
+      if not message or not message['d']:
         return
-      cmd = message['d']['Cmd']
-      if cmd == 'WV':
-        messageType = constant.MessageType['WriteValue']
-        writeValueMessage = WriteValueCommand()
-        if message['d']['Val']:
-          for deviceId, tags in message['d']['Val'].items():
-            d = Device(deviceId)
-            for tagName, value in tags.items():
-              d.tagList.append(Tag(tagName, value))
-            writeValueMessage.deviceList.append(d)
-        message = writeValueMessage
-      elif cmd == "WC":
-        return
-      elif cmd == "TSyn":
-        messageType = constant.MessageType['TimeSync']
-        UTC = float(message['d']['UTC'])
-        miniDateTime = datetime.datetime(1970, 1, 1, 0, 0, 0, 0)
-        UTC = miniDateTime + datetime.timedelta(seconds = UTC)
-        message = TimeSyncCommand(UTC)
+      if 'Cmd' in message['d']:
+        if not message['d']['Cmd']:
+          return
+        cmd = message['d']['Cmd']
+        if cmd == 'WV':
+          messageType = constant.MessageType['WriteValue']
+          writeValueMessage = WriteValueCommand()
+          if message['d']['Val']:
+            for deviceId, tags in message['d']['Val'].items():
+              d = Device(deviceId)
+              for tagName, value in tags.items():
+                d.tagList.append(Tag(tagName, value))
+              writeValueMessage.deviceList.append(d)
+          message = writeValueMessage
+        elif cmd == "WC":
+          return
+        elif cmd == "TSyn":
+          messageType = constant.MessageType['TimeSync']
+          UTC = float(message['d']['UTC'])
+          miniDateTime = datetime.datetime(1970, 1, 1, 0, 0, 0, 0)
+          UTC = miniDateTime + datetime.timedelta(seconds = UTC)
+          message = TimeSyncCommand(UTC)
+        else:
+          return
+      elif 'Cfg' in message['d']:
+        messageType = constant.MessageType['ConfigAck']
+        result = bool(message['d']['Cfg'])
+        message = ConfigAck(result = result)
       else:
         return
-    elif 'Cfg' in message['d']:
-      messageType = constant.MessageType['ConfigAck']
-      result = bool(message['d']['Cfg'])
-      message = ConfigAck(result = result)
-    else:
-      return
-    
-    if self.__on_messageReceived:
-      self.__on_messageReceived(self, MessageReceivedEventArgs(msgType = messageType, message = message))
+
+      if self.__on_messageReceived:
+        self.__on_messageReceived(self, MessageReceivedEventArgs(msgType = messageType, message = message))
+
+    except Exception as error:
+      logger.printError(e = error, msg = 'Message received event error !')
 
   def __on_disconnect(self, client, userdata, rc):
     if rc == 0:
@@ -290,14 +291,10 @@ class EdgeAgent():
       self.__heartBeatTimer.stop()
       if self.__options.dataRecover:
         self.__dataRecoverTimer.stop()
-      print('disconnected!!')
     else:
       print('Bad disconnect reconnecting Returned code=', rc)
     if self.__on_disconnected:
       self.__on_disconnected(self, isDisconnected = (not self.__client.connected_flag))
-
-  def __on_subscribe(self, client, userdata, mid, granted_qos):
-    print('subscribe successfully')
 
   ## Public Method
   def connect(self):

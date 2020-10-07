@@ -1,6 +1,7 @@
 from wisepaasdatahubedgesdk.Model.MQTTMessage import *
-import wisepaasdatahubedgesdk.Common.Constants as constant
 from wisepaasdatahubedgesdk.Model.Edge import *
+import wisepaasdatahubedgesdk.Common.Constants as constant
+import wisepaasdatahubedgesdk.Common.Logger as logger
 
 def convertData(data = None):
   try:
@@ -23,7 +24,7 @@ def convertData(data = None):
     payloads.append(dataMessage.getJson())
     return (True, payloads)
   except Exception as error:
-    print('convert data fail', str(error))
+    logger.printError(e = error, msg = 'Conevert data payload failed !')
     return (False, None)
     
 
@@ -37,7 +38,7 @@ def convertDeviceStatus(status = None):
       payload.setDeviceStatus(device.id, device.status)
     return (True, payload.getJson())
   except Exception as error:
-    print('convert status fail', str(error))
+    logger.printError(e = error, msg = 'Conevert device status payload failed !')
     return (False, None)
 
 def convertCreateorUpdateConfig(action = None, nodeId = None, config = None, heartbeat = constant.HeartbeatInterval):
@@ -70,7 +71,7 @@ def convertCreateorUpdateConfig(action = None, nodeId = None, config = None, hea
         payload.addTagConfig(nodeId, deviceId = device.id, tagName = tag.name, config = tag)
     return (True, payload.getJson())
   except Exception as error:
-    print('convert create config fail', str(error))
+    logger.printError(e = error, msg = 'Conevert config payload failed !')
     return (False, None)
 
 def convertDeleteConfig(action = None, nodeId = None, config = None):
@@ -96,5 +97,5 @@ def convertDeleteConfig(action = None, nodeId = None, config = None):
           payload.deleteTagConfig(nodeId, deviceId = device.id, tagName = tag.name)
     return (True, payload.getJson())
   except Exception as error:
-    print('convert create config fail', str(error))
+    logger.printError(e = error, msg = 'Conevert config payload failed !')
     return (False, None)
