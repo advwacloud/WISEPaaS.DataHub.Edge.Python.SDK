@@ -1,6 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.1.5] - 2020-11-26
+### Added
+-  加入logger便於debug使用
+### Changed
+- 初始化EdgeConfig時就建立好內部的NodeConfig物件
+### Fixed
+- 修正沒有訂閱on_message事件會出現錯誤log的問題
+### Removed
+- 棄用message received event中的time sync和write config
+
 ## [1.1.4] - 2020-09-15
 ### Fixed
 - array size of TagConfig set invalid issue

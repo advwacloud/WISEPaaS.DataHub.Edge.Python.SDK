@@ -275,7 +275,8 @@ class EdgeAgent():
         self.__on_messageReceived(self, MessageReceivedEventArgs(msgType = messageType, message = message))
 
     except Exception as error:
-      logger.printError(e = error, msg = 'Message received event error !')
+      pass
+      #logger.printError(e = error, msg = 'Message received event error !')
 
   def __on_disconnect(self, client, userdata, rc):
     if rc == 0:
