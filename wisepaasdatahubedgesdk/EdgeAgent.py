@@ -7,7 +7,7 @@ import paho.mqtt.client as mqtt
 
 import wisepaasdatahubedgesdk.Common.Constants as constant
 import wisepaasdatahubedgesdk.Common.Topic as mqttTopic
-from wisepaasdatahubedgesdk.Model.Edge import MQTTOptions, TimeSyncCommand, ConfigAck, WriteValueCommand, Device, Tag
+from wisepaasdatahubedgesdk.Model.Edge import MQTTOptions, TimeSyncCommand, ConfigAck, WriteValueCommand, Device, Tag, EdgeData
 from wisepaasdatahubedgesdk.Model.MQTTMessage import *
 import wisepaasdatahubedgesdk.Common.Converter as Converter
 from wisepaasdatahubedgesdk.Model.Event import *
@@ -134,6 +134,22 @@ class EdgeAgent():
       return result
     except Exception as error:
       logger.printError(e = error, msg = 'Send data error !')
+      return False
+
+  def __sendDataArray(self, datas):
+    try:
+      (result, payloads) = Converter.convertDataWithArray(datas)
+      payloads_msg = json.dumps(payloads)
+      print(payloads_msg)
+      if result:
+        if not self.isConnected():
+            self.__recoverHelper.write(payloads)
+        else:
+          topic = mqttTopic.DataTopic.format(self.__options.nodeId)
+          (res, msg) = self.__publishData(topic, payload = payloads_msg, qos = constant.MqttQualityOfServiceLevel['AtLeastOnce'], retain = False)
+      return result
+    except Exception as error:
+      print('sendData fail', str(error))
       return False
 
   def __sendDeviceStatus(self, deviceStatus):
@@ -318,7 +334,15 @@ class EdgeAgent():
   def sendData(self, data = None):
     if data is None: 
       return False
-    return self.__sendData(data)
+    elif type(data) == type(list()):
+      if len(data) > 0 and type(data[0]) == type(EdgeData()):
+        return self.__sendDataArray(data)
+      else:
+        raise ValueError('sendData(data): data is invalid')
+    elif type(data) == type(EdgeData()):
+      return self.__sendData(data)
+    else:
+      raise ValueError('sendData(data): data is invalid')
 
   def sendDeviceStatus(self, deviceStatus = None):
     if not self.isConnected:

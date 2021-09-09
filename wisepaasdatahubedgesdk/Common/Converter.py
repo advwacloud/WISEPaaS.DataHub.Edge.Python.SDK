@@ -19,6 +19,26 @@ def convertData(data = None):
   except Exception as error:
     logger.printError(e = error, msg = 'Conevert data payload failed !')
     return (False, None)
+
+def convertDataWithArray(datas = None):
+  try:
+    if datas is None:
+      return (False, None)
+    payloads = []
+    for data in datas:
+      dataMessage = None
+      tagList = data.tagList
+      tagList = sorted(tagList, key = lambda tag: tag.deviceId)
+      for tag in tagList:
+        if dataMessage is None:
+          dataMessage = DataMessage()
+          dataMessage.setTimestamp(data.timestamp)
+        dataMessage.setTagValue(tag.deviceId, tag.tagName, tag.value)
+      payloads.append(dataMessage.message)
+    return (True, payloads)
+  except Exception as error:
+    print('convert data fail', str(error))
+    return (False, None)
     
 
 def convertDeviceStatus(status = None):
