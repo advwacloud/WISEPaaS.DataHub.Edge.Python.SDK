@@ -8,19 +8,12 @@ def convertData(data = None):
     if data is None:
       return (False, None)
     payloads = []
-    count = 0
-    dataMessage = None
+    dataMessage = DataMessage()
+    dataMessage.setTimestamp(data.timestamp)
     tagList = data.tagList
     tagList = sorted(tagList, key = lambda tag: tag.deviceId)
     for tag in tagList:
-      if dataMessage is None:
-        dataMessage = DataMessage()
-        dataMessage.setTimestamp(data.timestamp)
       dataMessage.setTagValue(tag.deviceId, tag.tagName, tag.value)
-      count += 1
-      if count == constant.DataMaxTagCount:
-        payloads.append(dataMessage.getJson())
-        dataMessage = None
     payloads.append(dataMessage.getJson())
     return (True, payloads)
   except Exception as error:
