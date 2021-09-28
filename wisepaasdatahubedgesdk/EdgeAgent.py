@@ -140,7 +140,6 @@ class EdgeAgent():
     try:
       (result, payloads) = Converter.convertDataWithArray(datas)
       payloads_msg = json.dumps(payloads)
-      print(payloads_msg)
       if result:
         if not self.isConnected():
             self.__recoverHelper.write(payloads)
