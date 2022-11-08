@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.1.7] - 2021-09-28
+### Added
+- 支援批量數據上傳
+
 ## [1.1.6] - 2021-09-09
 ### Removed
 - 移除資料大封包拆成批次小封包的機制
